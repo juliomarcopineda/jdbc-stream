@@ -6,6 +6,8 @@
  * User Manual available at https://docs.gradle.org/5.4/userguide/java_library_plugin.html
  */
 
+version = "0.1.0"
+
 plugins {
     // Apply the java-library plugin to add support for Java Library
     `java-library`
@@ -26,4 +28,15 @@ dependencies {
 
     // Use JUnit test framework
     testImplementation("junit:junit:4.12")
+}
+
+tasks {
+    jar {
+        manifest {
+            attributes(
+                mapOf("Implementation-Title" to project.name,
+                      "Implementation-Version" to project.version)
+            )
+        }
+    }
 }

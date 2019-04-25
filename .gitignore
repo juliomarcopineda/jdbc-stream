@@ -1,5 +1,13 @@
+# Eclipse files
+.settings
+.classpath
+
+# Compiled files
+*.class
+
 # Ignore Gradle project-specific cache directory
 .gradle
 
 # Ignore Gradle build output directory
 build
+META-INF

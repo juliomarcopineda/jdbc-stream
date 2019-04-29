@@ -10,10 +10,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Iterator;
-import java.util.Map;
-
-import jdbc.stream.iterator.ResultSetIterator;
 
 public class TestSQL {
 	public static void main(String[] args) {
@@ -30,11 +26,19 @@ public class TestSQL {
 			//				System.out.println(rs.getString("IrisClass") + "\t" + rs.getDouble("SepalLength"));
 			//			}
 			
-			Iterator<Map<String, Object>> iterator = new ResultSetIterator(conn, sql);
-			while (iterator.hasNext()) {
-				Map<String, Object> row = iterator.next();
-				System.out.println(row);
-			}
+			JdbcStream.stream(conn, sql).map(row -> {
+				double petalLength = 0;
+				
+				try {
+					petalLength = row.getDouble("PetalLength");
+				}
+				catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				return petalLength;
+			}).forEach(System.out::println);
 		}
 		catch (SQLException e) {
 			e.printStackTrace();

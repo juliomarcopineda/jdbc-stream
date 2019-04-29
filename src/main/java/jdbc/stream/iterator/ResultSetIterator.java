@@ -3,13 +3,9 @@ package jdbc.stream.iterator;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 
@@ -17,7 +13,7 @@ import java.util.Map;
  * @author Julio Pineda
  *
  */
-public class ResultSetIterator implements Iterator<Map<String, Object>> {
+public class ResultSetIterator implements Iterator<ResultSet> {
 	private Connection connection;
 	private String sql;
 	
@@ -25,6 +21,7 @@ public class ResultSetIterator implements Iterator<Map<String, Object>> {
 	private ResultSet resultSet;
 	
 	private List<String> columnLabels;
+	private List<String> columnClassNames;
 	
 	public ResultSetIterator(Connection connection, String sql) {
 		this.connection = connection;
@@ -36,43 +33,29 @@ public class ResultSetIterator implements Iterator<Map<String, Object>> {
 	 */
 	@Override
 	public boolean hasNext() {
-		boolean hasMore = true;
-		
 		if (this.preparedStatement == null) {
 			this.initialize();
 		}
 		
+		boolean hasNext = false;
+		
 		try {
-			if (!resultSet.next()) {
-				hasMore = false;
-			}
+			hasNext = resultSet.next();
 		}
 		catch (SQLException e) {
 			close();
 			e.printStackTrace();
 		}
 		
-		return hasMore;
+		return hasNext;
 	}
 	
 	/**
 	 * 
 	 */
 	@Override
-	public Map<String, Object> next() {
-		Map<String, Object> map = new LinkedHashMap<>();
-		
-		for (String columnLabel : this.columnLabels) {
-			try {
-				map.put(columnLabel, this.resultSet.getObject(columnLabel));
-			}
-			catch (SQLException e) {
-				close();
-				e.printStackTrace();
-			}
-		}
-		
-		return map;
+	public ResultSet next() {
+		return this.resultSet;
 	}
 	
 	/**
@@ -82,7 +65,6 @@ public class ResultSetIterator implements Iterator<Map<String, Object>> {
 		try {
 			this.preparedStatement = connection.prepareStatement(this.sql);
 			this.resultSet = this.preparedStatement.executeQuery();
-			setMetaData();
 		}
 		catch (SQLException e) {
 			this.close();
@@ -97,24 +79,6 @@ public class ResultSetIterator implements Iterator<Map<String, Object>> {
 		try {
 			this.resultSet.close();
 			this.preparedStatement.close();
-		}
-		catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	/**
-	 * 
-	 */
-	private void setMetaData() {
-		this.columnLabels = new ArrayList<>();
-		
-		try {
-			ResultSetMetaData metaData = resultSet.getMetaData();
-			
-			for (int column = 1; column <= metaData.getColumnCount(); column++) {
-				this.columnLabels.add(metaData.getColumnLabel(column));
-			}
 		}
 		catch (SQLException e) {
 			e.printStackTrace();

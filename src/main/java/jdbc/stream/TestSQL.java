@@ -9,8 +9,11 @@ import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Iterator;
+import java.util.Map;
+
+import jdbc.stream.iterator.ResultSetIterator;
 
 public class TestSQL {
 	public static void main(String[] args) {
@@ -19,12 +22,18 @@ public class TestSQL {
 			createIrisTable(conn);
 			insertIrisData(conn);
 			
-			String sql = "SELECT * FROM iris";
+			String sql = "SELECT PetalLength, IrisClass FROM iris";
 			PreparedStatement ps = conn.prepareStatement(sql);
-			ResultSet rs = ps.executeQuery();
+			//			ResultSet rs = ps.executeQuery();
+			//			
+			//			while (rs.next()) {
+			//				System.out.println(rs.getString("IrisClass") + "\t" + rs.getDouble("SepalLength"));
+			//			}
 			
-			while (rs.next()) {
-				System.out.println(rs.getString("IrisClass") + "\t" + rs.getDouble("SepalLength"));
+			Iterator<Map<String, Object>> iterator = new ResultSetIterator(conn, sql);
+			while (iterator.hasNext()) {
+				Map<String, Object> row = iterator.next();
+				System.out.println(row);
 			}
 		}
 		catch (SQLException e) {

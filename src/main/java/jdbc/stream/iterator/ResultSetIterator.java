@@ -1,4 +1,4 @@
-package jdbc.stream;
+package jdbc.stream.iterator;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,35 +20,59 @@ import java.util.Map;
 public class ResultSetIterator implements Iterator<Map<String, Object>> {
 	private Connection connection;
 	private String sql;
-	private String idField;
 	
 	private PreparedStatement preparedStatement;
 	private ResultSet resultSet;
-	private List<String> columnNames;
 	
-	private Map<String, Object> before;
+	private List<String> columnLabels;
 	
-	public ResultSetIterator(Connection connection, String sql, String idField) {
+	public ResultSetIterator(Connection connection, String sql) {
 		this.connection = connection;
 		this.sql = sql;
-		this.idField = idField;
 	}
 	
+	/**
+	 * 
+	 */
 	@Override
 	public boolean hasNext() {
-		boolean hasMore = false;
+		boolean hasMore = true;
 		
 		if (this.preparedStatement == null) {
-			initialize();
+			this.initialize();
 		}
 		
-		return false;
+		try {
+			if (!resultSet.next()) {
+				hasMore = false;
+			}
+		}
+		catch (SQLException e) {
+			close();
+			e.printStackTrace();
+		}
+		
+		return hasMore;
 	}
 	
+	/**
+	 * 
+	 */
 	@Override
 	public Map<String, Object> next() {
-		// TODO Auto-generated method stub
-		return null;
+		Map<String, Object> map = new LinkedHashMap<>();
+		
+		for (String columnLabel : this.columnLabels) {
+			try {
+				map.put(columnLabel, this.resultSet.getObject(columnLabel));
+			}
+			catch (SQLException e) {
+				close();
+				e.printStackTrace();
+			}
+		}
+		
+		return map;
 	}
 	
 	/**
@@ -58,13 +82,10 @@ public class ResultSetIterator implements Iterator<Map<String, Object>> {
 		try {
 			this.preparedStatement = connection.prepareStatement(this.sql);
 			this.resultSet = this.preparedStatement.executeQuery();
-			this.columnNames = getColumnNames(this.resultSet);
-			
-			before = new LinkedHashMap<>();
-			setValues(before);
-			
+			setMetaData();
 		}
 		catch (SQLException e) {
+			this.close();
 			e.printStackTrace();
 		}
 	}
@@ -84,39 +105,19 @@ public class ResultSetIterator implements Iterator<Map<String, Object>> {
 	
 	/**
 	 * 
-	 * @param row
 	 */
-	private void setValues(Map<String, Object> row) {
-		for (String columnName : this.columnNames) {
-			try {
-				Object value = this.resultSet.getObject(columnName);
-				row.put(columnName, value);
-			}
-			catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-	
-	/**
-	 * Returns the List of columns names given a open result set.
-	 * 
-	 * @param resultSet
-	 * @return list of column names
-	 */
-	private List<String> getColumnNames(ResultSet resultSet) {
-		List<String> columnNames = new ArrayList<>();
+	private void setMetaData() {
+		this.columnLabels = new ArrayList<>();
 		
 		try {
 			ResultSetMetaData metaData = resultSet.getMetaData();
-			for (int i = 1; i <= metaData.getColumnCount(); i++) {
-				columnNames.add(metaData.getColumnLabel(i));
+			
+			for (int column = 1; column <= metaData.getColumnCount(); column++) {
+				this.columnLabels.add(metaData.getColumnLabel(column));
 			}
 		}
 		catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
-		return columnNames;
 	}
 }

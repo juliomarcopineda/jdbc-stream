@@ -5,10 +5,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Iterator;
-import java.util.List;
 
 /**
- * 
+ * ResultSetIterator is an Iterator implementation of the JDBC ResultSet class. This iterator is used
+ * for creating Stream implementation of the JDBC ResultSet class.
  * 
  * @author Julio Pineda
  *
@@ -20,16 +20,13 @@ public class ResultSetIterator implements Iterator<ResultSet> {
 	private PreparedStatement preparedStatement;
 	private ResultSet resultSet;
 	
-	private List<String> columnLabels;
-	private List<String> columnClassNames;
-	
 	public ResultSetIterator(Connection connection, String sql) {
 		this.connection = connection;
 		this.sql = sql;
 	}
 	
 	/**
-	 * 
+	 * Checks if ResultSet has more rows and moves the pointer of the ResultSet.
 	 */
 	@Override
 	public boolean hasNext() {
@@ -51,7 +48,7 @@ public class ResultSetIterator implements Iterator<ResultSet> {
 	}
 	
 	/**
-	 * 
+	 * Return the ResultSet pointer.
 	 */
 	@Override
 	public ResultSet next() {

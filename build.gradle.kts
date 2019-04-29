@@ -17,6 +17,7 @@ repositories {
     // Use jcenter for resolving your dependencies.
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
+	mavenCentral()
 }
 
 dependencies {
@@ -25,7 +26,9 @@ dependencies {
 
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
     implementation("com.google.guava:guava:27.0.1-jre")
-
+    // https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc
+    implementation("org.xerial:sqlite-jdbc:3.27.2.1")
+	
     // Use JUnit test framework
     testImplementation("junit:junit:4.12")
 }

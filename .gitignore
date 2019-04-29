@@ -5,7 +5,7 @@
 
 # Compiled files
 *.class
-*/bin/*
+bin/*
 
 # Ignore Gradle project-specific cache directory
 .gradle

@@ -12,7 +12,6 @@ version = "0.1.0"
 plugins {
     `java-library`
 	`maven-publish`
-	id("com.gradle.build-scan") version "2.2.1"
 }
 
 repositories {
@@ -34,9 +33,4 @@ tasks {
             )
         }
     }
-}
-
-buildScan {
-    termsOfServiceUrl = "https://gradle.com/terms-of-service"
-    termsOfServiceAgree = "yes"
 }

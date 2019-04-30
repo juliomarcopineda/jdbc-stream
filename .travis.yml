@@ -2,10 +2,10 @@ language: java
 install: true
 
 jdk:
-  - oraclejdk11
+ - oraclejdk11
 
 before_install:
  - chmod +x gradlew
 
 script:
-  - ./gradlew build --scan -s
+ - ./gradlew build

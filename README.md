@@ -7,7 +7,15 @@ TODO: MavenCentral
 jdbc-stream is a light-weight convenience library that wraps any JDBC ResultSet into a Java 8 Stream to take advantage of the Stream API and functional programming in Java.
 
 ## Example Usage
-For this example, we will assume that we have a SQLite instance with the [Iris Data Set](https://archive.ics.uci.edu/ml/datasets/iris) in the table `iris`
+For this example, we will assume that we have a SQLite instance with the [Iris Data Set](https://archive.ics.uci.edu/ml/datasets/iris) in the table `iris` with the following schema:
+
+```sql
+CREATE TABLE iris (SepalLength real, 
+                   SepalWidth real, 
+                   PetalLength real, 
+                   PetalWidth real, 
+                   IrisClass varchar(255))
+```
 
 #### 1) Create a connection to our SQL database. 
 For this example we will use an in-memory SQLite server and the `java.sql` library

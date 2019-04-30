@@ -117,7 +117,8 @@ public class JdbcStreamTest {
 	private static void insertIrisData(Connection connection) throws SQLException {
 		Path irisPath = null;
 		try {
-			irisPath = Paths.get(TestSQL.class.getClassLoader().getResource("iris.data").toURI());
+			irisPath = Paths.get(
+							JdbcStreamTest.class.getClassLoader().getResource("iris.data").toURI());
 		}
 		catch (URISyntaxException e1) {
 			e1.printStackTrace();

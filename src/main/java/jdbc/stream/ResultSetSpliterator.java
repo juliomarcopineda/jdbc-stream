@@ -1,4 +1,4 @@
-package jdbc.stream.iterator;
+package jdbc.stream;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

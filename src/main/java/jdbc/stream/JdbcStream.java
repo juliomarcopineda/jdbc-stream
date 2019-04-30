@@ -4,8 +4,6 @@ import java.sql.ResultSet;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import jdbc.stream.iterator.ResultSetSpliterator;
-
 /**
  * JdbcStream is a Stream wrapper on top of the JDBC ResultSet. This class provides utility methods to convert
  * the ResultSet into a Stream<ResultSet> which opens up the Java Stream API to JDBC.

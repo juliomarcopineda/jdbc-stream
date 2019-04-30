@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 
 /**
  * ResultSetSpliterator is a light-weight wrapper on top of the JDBC ResultSet class. This class handles iterating through
- * the ResultSet, and allows the creation of a Stream<ResultSet> to take advantage of the Stream API.
+ * the ResultSet, and allows the creation of a Stream of ResultSet to take advantage of the Stream API.
  * 
  * @author pinedajb
  *

@@ -1,15 +1,14 @@
 package jdbc.stream;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
-import java.util.Spliterators;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import jdbc.stream.iterator.ResultSetIterator;
+import jdbc.stream.iterator.ResultSetSpliterator;
 
 /**
- * 
+ * JdbcStream is a Stream wrapper on top of the JDBC ResultSet. This class provides utility methods to convert
+ * the ResultSet into a Stream<ResultSet> which opens up the Java Stream API to JDBC.
  * 
  * @author pinedajb
  *
@@ -17,16 +16,15 @@ import jdbc.stream.iterator.ResultSetIterator;
 public class JdbcStream {
 	
 	/**
-	 * Returns a Stream of the JDBC ResultSet given the SQL connection and SQL statement.
+	 * Given a ResultSet, convert the ResultSet into a Stream
 	 * 
-	 * @param connection
-	 * @param sql
+	 * @param resultSet
 	 * @return
 	 */
-	public static Stream<ResultSet> stream(Connection connection, String sql) {
-		ResultSetIterator iterator = new ResultSetIterator(connection, sql);
+	public static Stream<ResultSet> stream(ResultSet resultSet) {
+		ResultSetSpliterator spliterator = new ResultSetSpliterator(resultSet);
 		
-		return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, 0), false);
+		return StreamSupport.stream(spliterator, false);
 	}
 	
 	private JdbcStream() {

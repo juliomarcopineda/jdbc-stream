@@ -72,7 +72,7 @@ public class ResultSetIterator implements Iterator<ResultSet> {
 	/**
 	 * Close the ResultSet and PreparedStatment resources
 	 */
-	private void close() {
+	public void close() {
 		try {
 			this.resultSet.close();
 			this.preparedStatement.close();

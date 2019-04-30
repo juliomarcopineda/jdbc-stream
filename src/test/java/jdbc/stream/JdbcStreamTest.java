@@ -22,6 +22,13 @@ import java.util.Map;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+/**
+ * Unit tests of the JdbcStream library. These tests ensure that traversing the ResultSet without the JdbcStream wrapper
+ * is the same as traversing using the JdbcStream library and API.
+ * 
+ * @author pinedajb
+ *
+ */
 public class JdbcStreamTest {
 	private static Connection connection;
 	private static String sqlQuery = "SELECT * FROM iris";
@@ -30,6 +37,18 @@ public class JdbcStreamTest {
 	private static double aveSepalLength;
 	private static String widestPetal;
 	
+	/**
+	 * <p>Creates a SQLite instance in memory, creates a table with a pre-defined scheme and inserts the
+	 * Iris data set for testing the JdbcStream library.</p>
+	 * 
+	 * <p>Additionally, performs calculations on the Iris data set by using traversing the ResultSet without
+	 * the Stream API which will be used for testing</p>
+	 * 
+	 * The Iris data set can be found from:
+	 * <a href=https://archive.ics.uci.edu/ml/datasets/iris>https://archive.ics.uci.edu/ml/datasets/iris</a>
+	 * 
+	 * @throws Exception
+	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		connection = DriverManager.getConnection("jdbc:sqlite::memory:");
@@ -69,6 +88,12 @@ public class JdbcStreamTest {
 		}
 	}
 	
+	/**
+	 * Given the SQLite connection, creates a schema for the Iris data set and a creates a table.
+	 * 
+	 * @param connection
+	 * @throws SQLException
+	 */
 	private static void createIrisTable(Connection connection) throws SQLException {
 		String sqlTable = "CREATE TABLE iris ( \n" + "    SepalLength real, \n"
 						+ "    SepalWidth real, \n" + "    PetalLength real, \n"
@@ -78,6 +103,12 @@ public class JdbcStreamTest {
 		preparedStatement.execute();
 	}
 	
+	/**
+	 * Given the SQLite connection, inserts the Iris data into a table.
+	 * 
+	 * @param connection
+	 * @throws SQLException
+	 */
 	private static void insertIrisData(Connection connection) throws SQLException {
 		Path irisPath = null;
 		try {
@@ -109,6 +140,17 @@ public class JdbcStreamTest {
 		}
 	}
 	
+	/**
+	 * Inserts the different data fields of the Iris data set into the iris table.
+	 * 
+	 * @param conn
+	 * @param sepalLength
+	 * @param sepalWidth
+	 * @param petalLength
+	 * @param petalWidth
+	 * @param irisClass
+	 * @throws SQLException
+	 */
 	private static void insert(Connection conn, double sepalLength, double sepalWidth,
 					double petalLength, double petalWidth, String irisClass) throws SQLException {
 		String sql = "INSERT INTO iris(SepalLength, SepalWidth, PetalLength, PetalWidth, IrisClass) VALUES(?,?,?,?,?)";
@@ -123,16 +165,34 @@ public class JdbcStreamTest {
 		preparedStatement.executeUpdate();
 	}
 	
+	/**
+	 * Counts the number of rows in the iris data set using the JdbcStream library and Stream API. Then,
+	 * tests if this count is correct.
+	 * 
+	 * @throws SQLException
+	 */
 	@Test
 	public void rowNumTest() throws SQLException {
-		long count = JdbcStream.stream(connection, sqlQuery).count();
+		PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+		ResultSet resultSet = preparedStatement.executeQuery();
+		
+		long count = JdbcStream.stream(resultSet).count();
 		
 		assertEquals(rowNum, count);
 	}
 	
+	/**
+	 * Calculates the average Sepal Length of all the observations in the Iris data sets using the JdbcStream library
+	 * and Stream API. Tests if this average is correctly computed.
+	 * 
+	 * @throws SQLException
+	 */
 	@Test
 	public void averageTest() throws SQLException {
-		double streamAveSepalLength = JdbcStream.stream(connection, sqlQuery).mapToDouble(rs -> {
+		PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+		ResultSet resultSet = preparedStatement.executeQuery();
+		
+		double streamAveSepalLength = JdbcStream.stream(resultSet).mapToDouble(rs -> {
 			double sepalLength = 0;
 			
 			try {

@@ -9,7 +9,10 @@ import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TestSQL {
 	public static void main(String[] args) {
@@ -20,13 +23,17 @@ public class TestSQL {
 			
 			String sql = "SELECT PetalLength, IrisClass FROM iris";
 			PreparedStatement ps = conn.prepareStatement(sql);
-			//			ResultSet rs = ps.executeQuery();
-			//			
-			//			while (rs.next()) {
-			//				System.out.println(rs.getString("IrisClass") + "\t" + rs.getDouble("SepalLength"));
-			//			}
+			ResultSet rs = ps.executeQuery();
 			
-			JdbcStream.stream(conn, sql).map(row -> {
+			List<Double> petalLengths = new ArrayList<>();
+			while (rs.next()) {
+				petalLengths.add(rs.getDouble("PetalLength"));
+			}
+			System.out.println(petalLengths.stream().mapToDouble(i -> i).average().getAsDouble());
+			
+			rs = ps.executeQuery();
+			
+			double average = JdbcStream.stream(rs).mapToDouble(row -> {
 				double petalLength = 0;
 				
 				try {
@@ -38,7 +45,9 @@ public class TestSQL {
 				}
 				
 				return petalLength;
-			}).forEach(System.out::println);
+			}).average().getAsDouble();
+			
+			System.out.println(average);
 		}
 		catch (SQLException e) {
 			e.printStackTrace();

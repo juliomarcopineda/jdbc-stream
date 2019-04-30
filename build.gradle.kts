@@ -6,10 +6,13 @@
  * User Manual available at https://docs.gradle.org/5.4/userguide/java_library_plugin.html
  */
 
+group = "jdbc.stream"
 version = "0.1.0"
 
 plugins {
     `java-library`
+	`maven-publish`
+	id("com.gradle.build-scan") version "2.2.1"
 }
 
 repositories {
@@ -18,7 +21,6 @@ repositories {
 }
 
 dependencies {	
-
     testImplementation("junit:junit:4.12")
 	testImplementation("org.xerial:sqlite-jdbc:3.27.2.1")
 }
@@ -32,4 +34,9 @@ tasks {
             )
         }
     }
+}
+
+buildScan {
+    termsOfServiceUrl = "https://gradle.com/terms-of-service"
+    termsOfServiceAgree = "yes"
 }

@@ -53,7 +53,7 @@ double averageSepalLength = JdbcStream.stream(resultSet)
 
 ##### c) Get Iris species with the widest Petal Width
 
-- Get `Map<String, List<Double>>` where each `key` is the Iris species and the `List<Double>` is all their possible petal widths
+- Get `Map<String, List<Double>>` where each `key` is the Iris species and each `value` is the `List<Double>` of all their possible petal widths
 
 ```java
 Map<String, List<Double>> petalWidths = JdbcStream.stream(resultSet)

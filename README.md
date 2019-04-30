@@ -1,4 +1,6 @@
 # jdbc-stream
+[![Build Status](https://travis-ci.org/juliomarcopineda/jdbc-stream.svg?branch=master)](https://travis-ci.org/juliomarcopineda/jdbc-stream)
+
 Light-weight library to wrap JDBC ResultSet to Java 8 Stream
 
 TODO: MavenCentral

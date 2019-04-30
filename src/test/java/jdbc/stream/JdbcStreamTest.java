@@ -13,12 +13,17 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -208,20 +213,55 @@ public class JdbcStreamTest {
 		assertEquals(aveSepalLength, streamAveSepalLength, 0.01);
 	}
 	
+	/**
+	 * Determines which Iris species has the widest Petal Width using the JdbcStream library and Stream API.
+	 * Checks if this determination is correct.
+	 * 
+	 * @throws SQLException
+	 */
 	@Test
 	public void widestPetalTest() throws SQLException {
-		//		JdbcStream.stream(connection, sqlQuery).map(rs -> {
-		//			String irisClass = "";
-		//			double petalWidth = 0;
-		//			try {
-		//				irisClass = rs.getString("IrisClass");
-		//				petalWidth = rs.getDouble("PetalWidth");
-		//			}
-		//			catch (SQLException e) {
-		//				e.printStackTrace();
-		//			}
-		//			
-		//			return new AbstractMap.SimpleEntry<>(irisClass, petalWidth);
-		//		}).collect);
+		PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+		ResultSet resultSet = preparedStatement.executeQuery();
+		
+		Map<String, List<Double>> petalWidths = JdbcStream.stream(resultSet).map(rs -> {
+			String irisClass = "";
+			double petalWidth = 0;
+			try {
+				irisClass = rs.getString("IrisClass");
+				petalWidth = rs.getDouble("PetalWidth");
+			}
+			catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+			return new AbstractMap.SimpleEntry<>(irisClass, petalWidth);
+		}).collect(Collectors.toMap(Map.Entry::getKey, e -> {
+			List<Double> list = new ArrayList<>();
+			list.add(e.getValue());
+			return list;
+		}, (l1, l2) -> Stream.of(l1, l2).flatMap(Collection::stream).collect(Collectors.toList())));
+		
+		String widestPetalTest = "";
+		double widestPetalWidth = 0;
+		for (Map.Entry<String, List<Double>> entry : petalWidths.entrySet()) {
+			String irisClass = entry.getKey();
+			double max = Collections.max(entry.getValue());
+			
+			if (max > widestPetalWidth) {
+				widestPetalWidth = max;
+				widestPetalTest = irisClass;
+			}
+		}
+		
+		assertEquals(widestPetal, widestPetalTest);
+	}
+	
+	/**
+	 * Closes all resources after all tests have been performed.
+	 */
+	@AfterClass
+	public static void tearDownAfterClass() throws SQLException {
+		connection.close();
 	}
 }

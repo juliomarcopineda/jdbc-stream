@@ -94,7 +94,7 @@ Map<String, List<Double>> petalWidths = JdbcStream.stream(resultSet)
 ```java
 String irisWidestPetal = petalWidths.entrySet()
   .stream()
-  .max((entry1, entry2) -> entry1.getValue() > entry2.getValue() ? 1 : -1)
+  .max((e1, e2) -> Collections.max(e1.getValue()) > Collections.max(e2.getValue()) ? 1 : -1)
   .get()
   .getKey()
 ```

@@ -80,17 +80,12 @@ public class JdbcStreamTest {
 		rowNum = num;
 		aveSepalLength = sepalLengths.stream().mapToDouble(i -> i).average().getAsDouble();
 		
-		widestPetal = "";
-		double widestPetalWidth = 0;
-		for (Map.Entry<String, List<Double>> entry : petalWidths.entrySet()) {
-			String irisClass = entry.getKey();
-			double max = Collections.max(entry.getValue());
-			
-			if (max > widestPetalWidth) {
-				widestPetalWidth = max;
-				widestPetal = irisClass;
-			}
-		}
+		widestPetal = petalWidths.entrySet()
+						.stream()
+						.max((e1, e2) -> Collections.max(e1.getValue()) > Collections
+										.max(e2.getValue()) ? 1 : -1)
+						.get()
+						.getKey();
 	}
 	
 	/**
@@ -243,17 +238,12 @@ public class JdbcStreamTest {
 			return list;
 		}, (l1, l2) -> Stream.of(l1, l2).flatMap(Collection::stream).collect(Collectors.toList())));
 		
-		String widestPetalTest = "";
-		double widestPetalWidth = 0;
-		for (Map.Entry<String, List<Double>> entry : petalWidths.entrySet()) {
-			String irisClass = entry.getKey();
-			double max = Collections.max(entry.getValue());
-			
-			if (max > widestPetalWidth) {
-				widestPetalWidth = max;
-				widestPetalTest = irisClass;
-			}
-		}
+		String widestPetalTest = petalWidths.entrySet()
+						.stream()
+						.max((e1, e2) -> Collections.max(e1.getValue()) > Collections
+										.max(e2.getValue()) ? 1 : -1)
+						.get()
+						.getKey();
 		
 		assertEquals(widestPetal, widestPetalTest);
 	}

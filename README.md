@@ -64,9 +64,9 @@ Map<String, List<Double>> petalWidths = JdbcStream.stream(resultSet)
       irisClass = rs.getString("IrisClass");
       petalWidth = rs.getDouble("PetalWidth");
     }
-		catch (SQLException e) {
-		  // Handle exception
-		}
+    catch (SQLException e) {
+    	// Handle exception
+    }
     return new AbstractMap.SimpleEntry<>(irisClass, petalWidth);
     })
   .collect(Collectors.toMap(Map.Entry::getKey,

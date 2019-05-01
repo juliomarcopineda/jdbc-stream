@@ -6,12 +6,13 @@
  * User Manual available at https://docs.gradle.org/5.4/userguide/java_library_plugin.html
  */
 
-group = "jdbc.stream"
+group = "com.github.juliomarcopineda"
 version = "0.1.0"
 
 plugins {
     `java-library`
 	`maven-publish`
+	signing
 }
 
 repositories {
@@ -33,4 +34,76 @@ tasks {
             )
         }
     }
+}
+
+tasks.register<Jar>("sourcesJar") {
+    archiveClassifier.set("sources")
+    from(sourceSets.main.get().allJava)
+}
+
+tasks.register<Jar>("javadocJar") {
+    archiveClassifier.set("javadoc")
+    from(tasks.javadoc.get().destinationDir)
+}
+
+tasks.javadoc {
+    if (JavaVersion.current().isJava9Compatible) {
+        (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
+    }
+}
+
+tasks.test {
+	useJUnit()
+}
+
+publishing {
+	publications {
+		create<MavenPublication>("mavenJava") {
+			artifactId = "jdbc-stream"
+			from(components["java"])
+			artifact(tasks["sourcesJar"])
+			artifact(tasks["javadocJar"])
+			versionMapping {
+				usage("java-api") {
+					fromResolutionOf("runtimeClasspath")
+				}
+                usage("java-runtime") {
+                    fromResolutionResult()
+                }
+            }
+			pom {
+				name.set("JDBC Stream")
+				description.set("Light-weight library to wrap JDBC ResultSet to Java 8 Stream")
+				url.set("https://github.com/juliomarcopineda/jdbc-stream")
+				licenses {
+					license {
+						name.set("MIT License")
+						url.set("https://opensource.org/licenses/MIT")
+					}
+				}
+				developers {
+					developer {
+						id.set("juliomarcopineda")
+						name.set("Julio Marco Pineda")
+						email.set("juliomarcopineda@gmail.com")
+					}
+				}
+				scm {
+					connection.set("git@github.com:juliomarcopineda/jdbc-stream.git")
+                    developerConnection.set("git@github.com:juliomarcopineda/jdbc-stream.git")
+					url.set("https://github.com/juliomarcopineda/jdbc-stream")
+				}
+			}
+		}
+	}
+	
+	repositories {
+		maven {
+			url = uri("file://${buildDir}/repo")
+		}
+	}
+}
+
+signing {
+    sign(publishing.publications["mavenJava"])
 }

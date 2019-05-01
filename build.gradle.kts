@@ -99,7 +99,11 @@ publishing {
 	
 	repositories {
 		maven {
-			url = uri("file://${buildDir}/repo")
+			url = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+			credentials {
+				username = sonatypeUsername
+				password = sonatypePassword
+			}
 		}
 	}
 }

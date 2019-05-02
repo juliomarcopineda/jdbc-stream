@@ -1,5 +1,7 @@
 # jdbc-stream
 [![Build Status](https://travis-ci.org/juliomarcopineda/jdbc-stream.svg?branch=master)](https://travis-ci.org/juliomarcopineda/jdbc-stream)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.juliomarcopineda/jdbc-stream/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.juliomarcopineda/jdbc-stream)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 Light-weight library to wrap JDBC ResultSet to Java 8 Stream
 

@@ -99,8 +99,8 @@ publishing {
 	
 	repositories {
 		maven {
-			val sonatypeUsername: String by project
-            val sonatypePassword: String by project
+			val sonatypeUsername: String? by project
+            val sonatypePassword: String? by project
 			
 			url=uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
 			credentials {

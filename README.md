@@ -21,15 +21,13 @@ jdbc-stream can be found at MavenCentral with group ID `com.github.juliomarcopin
 </dependency>
 ```
 
-#### Gradle
-
-##### Groovy DSL
+#### Gradle (Groovy DSL)
 
 ```groovy
 implementation 'com.github.juliomarcopineda:jdbc-stream:0.1.0'
 ```
 
-##### Kotlin DSL
+#### Gradle (Kotlin DSL)
 
 ```kotlin
 compile("com.github.juliomarcopineda:jdbc-stream:0.1.0")

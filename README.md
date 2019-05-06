@@ -17,20 +17,20 @@ jdbc-stream can be found at MavenCentral with group ID `com.github.juliomarcopin
 <dependency>
   <groupId>com.github.juliomarcopineda</groupId>
   <artifactId>jdbc-stream</artifactId>
-  <version>0.1.0</version>
+  <version>0.1.1</version>
 </dependency>
 ```
 
 #### Gradle (Groovy DSL)
 
 ```groovy
-implementation 'com.github.juliomarcopineda:jdbc-stream:0.1.0'
+implementation 'com.github.juliomarcopineda:jdbc-stream:0.1.1'
 ```
 
 #### Gradle (Kotlin DSL)
 
 ```kotlin
-compile("com.github.juliomarcopineda:jdbc-stream:0.1.0")
+compile("com.github.juliomarcopineda:jdbc-stream:0.1.1")
 ```
 
 ## Example Usage

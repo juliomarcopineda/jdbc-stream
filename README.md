@@ -3,7 +3,7 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.juliomarcopineda/jdbc-stream/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.juliomarcopineda/jdbc-stream)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-Light-weight library to wrap JDBC ResultSet to Java 8 Stream
+Light-weight library to wrap JDBC ResultSet to Java Stream API
 
 # Overview
 jdbc-stream is a light-weight convenience library that wraps any JDBC ResultSet into a Java 8 Stream to take advantage of the Stream API and functional programming in Java.

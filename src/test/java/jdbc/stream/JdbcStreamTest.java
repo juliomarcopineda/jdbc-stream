@@ -41,6 +41,7 @@ public class JdbcStreamTest {
 	private static long rowNum;
 	private static double aveSepalLength;
 	private static String widestPetal;
+	private static double aveSepalArea;
 	
 	/**
 	 * <p>Creates a SQLite instance in memory, creates a table with a pre-defined scheme and inserts the
@@ -65,15 +66,18 @@ public class JdbcStreamTest {
 		
 		long num = 0;
 		List<Double> sepalLengths = new ArrayList<>();
+		List<Double> sepalWidths = new ArrayList<>();
 		Map<String, List<Double>> petalWidths = new HashMap<>();
 		while (resultSet.next()) {
 			num++;
 			
 			double sepalLength = resultSet.getDouble("SepalLength");
+			double sepalWidth = resultSet.getDouble("SepalWidth");
 			double petalWidth = resultSet.getDouble("PetalWidth");
 			String irisClass = resultSet.getString("IrisClass");
 			
 			sepalLengths.add(sepalLength);
+			sepalWidths.add(sepalWidth);
 			petalWidths.computeIfAbsent(irisClass, key -> new ArrayList<>()).add(petalWidth);
 		}
 		
@@ -86,6 +90,15 @@ public class JdbcStreamTest {
 										.max(e2.getValue()) ? 1 : -1)
 						.get()
 						.getKey();
+		
+		List<Double> sepalAreas = new ArrayList<>();
+		for (int i = 0; i < sepalLengths.size(); i++) {
+			double sepalLength = sepalLengths.get(i);
+			double sepalWidth = sepalWidths.get(i);
+			
+			sepalAreas.add(sepalLength * sepalWidth);
+		}
+		aveSepalArea = sepalAreas.stream().mapToDouble(i -> i).average().getAsDouble();
 	}
 	
 	/**
@@ -246,6 +259,49 @@ public class JdbcStreamTest {
 						.getKey();
 		
 		assertEquals(widestPetal, widestPetalTest);
+	}
+	
+	@Test
+	public void mapperTest() throws SQLException {
+		PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+		ResultSet resultSet = preparedStatement.executeQuery();
+		
+		// Custom class to contain data about the Sepal
+		class Sepal {
+			double width;
+			double length;
+			
+			double getArea() {
+				return width * length;
+			}
+		}
+		
+		Mapper<Sepal> areaMapper = new Mapper<Sepal>() {
+			
+			@Override
+			public Sepal map(ResultSet resultSet) {
+				Sepal sepal = new Sepal();
+				
+				try {
+					sepal.length = resultSet.getDouble("SepalLength");
+					sepal.width = resultSet.getDouble("SepalWidth");
+				}
+				catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				return sepal;
+			}
+		};
+		
+		double average = JdbcStream.stream(resultSet, areaMapper)
+						.map(Sepal::getArea)
+						.mapToDouble(i -> i)
+						.average()
+						.getAsDouble();
+		
+		assertEquals(aveSepalArea, average, 0.01);
 	}
 	
 	/**

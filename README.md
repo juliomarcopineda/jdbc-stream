@@ -1,12 +1,37 @@
 # jdbc-stream
 [![Build Status](https://travis-ci.org/juliomarcopineda/jdbc-stream.svg?branch=master)](https://travis-ci.org/juliomarcopineda/jdbc-stream)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.juliomarcopineda/jdbc-stream/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.juliomarcopineda/jdbc-stream)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 Light-weight library to wrap JDBC ResultSet to Java 8 Stream
 
-TODO: MavenCentral
-
 # Overview
 jdbc-stream is a light-weight convenience library that wraps any JDBC ResultSet into a Java 8 Stream to take advantage of the Stream API and functional programming in Java.
+
+## Add jdbc-stream to your build
+jdbc-stream can be found at MavenCentral with group ID `com.github.juliomarcopineda` and artifact ID `jdbc-stream`.
+
+#### Maven
+
+```xml
+<dependency>
+  <groupId>com.github.juliomarcopineda</groupId>
+  <artifactId>jdbc-stream</artifactId>
+  <version>0.1.0</version>
+</dependency>
+```
+
+#### Gradle (Groovy DSL)
+
+```groovy
+implementation 'com.github.juliomarcopineda:jdbc-stream:0.1.0'
+```
+
+#### Gradle (Kotlin DSL)
+
+```kotlin
+compile("com.github.juliomarcopineda:jdbc-stream:0.1.0")
+```
 
 ## Example Usage
 For this example, we will assume that we have a SQLite instance with the [Iris Data Set](https://archive.ics.uci.edu/ml/datasets/iris) in the table `iris` with the following schema:
@@ -98,5 +123,3 @@ String irisWidestPetal = petalWidths.entrySet()
   .get()
   .getKey()
 ```
-
-# Installation

@@ -160,6 +160,8 @@ public class SepalMapper<Sepal> implements Mapper<Sepal> {
     catch (SQLException e) {
       // Handle exception
     }
+    
+    return sepal;
   }
 }
 ```
@@ -191,6 +193,8 @@ Mapper<Sepal> mapper = new Mapper<Sepal>() {
     catch (SQLException e) {
       // Handle exception
     }
+    
+    return sepal;
   }
 }
 ```

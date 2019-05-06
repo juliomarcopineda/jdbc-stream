@@ -9,7 +9,7 @@ import java.util.function.Consumer;
  * ResultSetSpliterator is a light-weight wrapper on top of the JDBC ResultSet class. This class handles iterating through
  * the ResultSet, and allows the creation of a Stream of ResultSet to take advantage of the Stream API.
  * 
- * @author pinedajb
+ * @author Julio Marco Pineda
  *
  */
 public class ResultSetSpliterator implements Spliterator<ResultSet> {

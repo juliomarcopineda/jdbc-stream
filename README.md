@@ -123,3 +123,74 @@ String irisWidestPetal = petalWidths.entrySet()
   .get()
   .getKey()
 ```
+
+##### d) Use a custom Mapper from ResultSet to client-defined Java class
+jdbc-stream can handle the mapping between ResultSet rows to a Java class as long as the client provides a Mapper. This Mapper must extend the Mapper interface that is included in the library.
+
+Example usage of this Mapper as follows:
+
+- First let us define a Sepal class.
+
+```java
+public class Sepal {
+  private int width;
+  private int length;
+  
+  public double getArea() {
+    return this.width * this.length;
+  }
+  
+  // getters and setters
+}
+```
+
+- Then, let's define a Mapper from ResultSet row to a Sepal.
+
+```java
+public class SepalMapper<Sepal> implements Mapper<Sepal> {
+  
+  @Override
+  public Sepal map(ResultSet resultSet) {
+    Sepal sepal = new Sepal();
+    
+    try {
+      sepal.setWidth(resultSet.get(SepalWidth));
+      sepal.setLength(resultSet.get(SepalLength));
+    }
+    catch (SQLException e) {
+      // Handle exception
+    }
+  }
+}
+```
+
+- Now, we can use both the ResultSet and the custom Mapper to take advantage of Java Stream API. Suppose we want to get the average sepal area:
+
+```java
+SepalMapper mapper = new SepalMapper();
+
+double averageSepalArea = JdbcStream(resultSet, mapper)
+  .map(Sepal::getArea)
+  .mapToDouble(i -> i)
+  .average()
+  .getAsDouble();
+```
+
+- Note: we could have used an anonymous class to define the custom mapper as follows:
+
+```java
+Mapper<Sepal> mapper = new Mapper<Sepal>() {
+  @Override
+  public Sepal map(ResultSet resultSet) {
+    Sepal sepal = new Sepal();
+    
+    try {
+      sepal.setWidth(resultSet.get(SepalWidth));
+      sepal.setLength(resultSet.get(SepalLength));
+    }
+    catch (SQLException e) {
+      // Handle exception
+    }
+  }
+}
+```
